@@ -11,7 +11,7 @@ SDK behavior depends on firmware support. Keep this file updated whenever firmwa
 | IMU / TOF sensor stream | `ae04` notify / indicate JSON | `request_imu_stream`, `request_tof_stream` |
 | Action definition read | `ae10` read characteristic | `get_action_list()` |
 | Dev PC WebSocket sensor mirror | `DEV_PC_AUDIO_WS_ENABLE`, text JSON mirror | `DevPcWebSocketHost` |
-| Bidirectional PCM audio | Dev PC audio WebSocket firmware path | `examples/04_audio_ws_bidirectional_host.py` |
+| Bidirectional PCM audio | Dev PC audio WebSocket firmware path | `examples/05_audio/bidirectional_pcm_ws_host.py` |
 | Robot adjustment | `MODE_ROBOT_ADJUST = 0x0A` | `syn_pose_adjust`, `syn_foot_adjust`, `syn_joint_adjust` |
 
 ## Firmware Notes

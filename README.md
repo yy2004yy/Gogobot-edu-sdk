@@ -88,16 +88,17 @@ Video guidance: keep short GIF/WebP previews in the repository when possible; pl
 
 | File | Purpose | Risk |
 |---|---|---|
-| `examples/01_connect.py` | Scan, list devices, connect by address | Low |
-| `examples/02_actions.py` | Actions, ears, expressions, tones | Medium |
-| `examples/03_movement.py` | Directional movement | Medium |
-| `examples/04_audio_ws_bidirectional_host.py` | Bidirectional PCM WebSocket host | Low |
-| `examples/05_imu_read.py` | Subscribe to IMU JSON on `ae04` | Low |
-| `examples/06_tof_read.py` | Subscribe to TOF JSON on `ae04` | Low |
-| `examples/07_Servo_Control.py` | Smooth pose / foot / joint adjustment | High |
-| `examples/08_sensor_ws_lan.py` | IMU/TOF over LAN via Dev PC WebSocket | Low |
+| `examples/01_connection/scan_and_connect.py` | Scan, list devices, connect by address | Low |
+| `examples/02_actions/basic_actions.py` | Run one high-level action | Medium |
+| `examples/02_actions/ears_expressions_audio.py` | Ears, expressions, tones | Low/Medium |
+| `examples/03_movement/directional_move.py` | Directional movement | Medium |
+| `examples/04_sensors/imu_read.py` | Subscribe to IMU JSON on `ae04` | Low |
+| `examples/04_sensors/tof_read.py` | Subscribe to TOF JSON on `ae04` | Low |
+| `examples/04_sensors/sensor_ws_lan.py` | IMU/TOF over LAN via Dev PC WebSocket | Low |
+| `examples/05_audio/bidirectional_pcm_ws_host.py` | Bidirectional PCM WebSocket host | Low |
+| `examples/06_robot_adjust/safe_pose_adjust.py` | Smooth pose / foot / joint adjustment | High |
 
-Full example index: [Examples](docs/examples.md).
+Full example index: [Examples](examples/README.md).
 
 ## Documentation
 

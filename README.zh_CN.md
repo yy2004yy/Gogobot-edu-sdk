@@ -88,16 +88,17 @@ with AiDog() as dog:
 
 | 文件 | 用途 | 风险等级 |
 |---|---|---|
-| `examples/01_connect.py` | 扫描、列出设备、按地址连接 | 低 |
-| `examples/02_actions.py` | 动作、耳朵、表情、提示音 | 中 |
-| `examples/03_movement.py` | 方向运动 | 中 |
-| `examples/04_audio_ws_bidirectional_host.py` | 双向 PCM WebSocket 上位机 | 低 |
-| `examples/05_imu_read.py` | 订阅 `ae04` IMU JSON | 低 |
-| `examples/06_tof_read.py` | 订阅 `ae04` TOF JSON | 低 |
-| `examples/07_Servo_Control.py` | 机身 / 足端 / 关节平滑调节 | 高 |
-| `examples/08_sensor_ws_lan.py` | 局域网 WebSocket 接收 IMU/TOF | 低 |
+| `examples/01_connection/scan_and_connect.py` | 扫描、列出设备、按地址连接 | 低 |
+| `examples/02_actions/basic_actions.py` | 执行一个高级动作 | 中 |
+| `examples/02_actions/ears_expressions_audio.py` | 耳朵、表情、提示音 | 低/中 |
+| `examples/03_movement/directional_move.py` | 方向运动 | 中 |
+| `examples/04_sensors/imu_read.py` | 订阅 `ae04` IMU JSON | 低 |
+| `examples/04_sensors/tof_read.py` | 订阅 `ae04` TOF JSON | 低 |
+| `examples/04_sensors/sensor_ws_lan.py` | 局域网 WebSocket 接收 IMU/TOF | 低 |
+| `examples/05_audio/bidirectional_pcm_ws_host.py` | 双向 PCM WebSocket 上位机 | 低 |
+| `examples/06_robot_adjust/safe_pose_adjust.py` | 机身 / 足端 / 关节平滑调节 | 高 |
 
-完整示例索引见：[示例说明](docs/examples.md)。
+完整示例索引见：[示例说明](examples/README.md)。
 
 ## 文档
 
