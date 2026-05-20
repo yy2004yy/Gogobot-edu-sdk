@@ -35,8 +35,8 @@ The examples are organized by feature area so users can quickly choose the right
 | `03_movement/timed_move.py` | Run a timed movement sequence | Medium | `python examples/03_movement/timed_move.py --duration 2 --yes` |
 | `04_sensors/imu_read.py` | Read BLE IMU stream | Low | `python examples/04_sensors/imu_read.py --hz 20` |
 | `04_sensors/tof_read.py` | Read BLE TOF stream | Low | `python examples/04_sensors/tof_read.py --hz 20 --mode both` |
-| `04_sensors/sensor_ws_lan.py` | Read LAN WebSocket IMU/TOF sensor JSON | Low | `python examples/04_sensors/sensor_ws_lan.py --bind 0.0.0.0 --port 8765` |
-| `05_audio/bidirectional_pcm_ws_host.py` | Run bidirectional PCM audio host | Low | `python examples/05_audio/bidirectional_pcm_ws_host.py --bind 0.0.0.0 --port 8765` |
+| `04_sensors/sensor_ws_lan.py` | Read LAN WebSocket IMU/TOF sensor JSON | Low | `python examples/04_sensors/sensor_ws_lan.py --bind 0.0.0.0 --port 8766` |
+| `05_audio/bidirectional_pcm_ws_host.py` | Run bidirectional PCM audio host | Low | `python examples/05_audio/bidirectional_pcm_ws_host.py --bind 0.0.0.0 --port 8766` |
 | `06_robot_adjust/safe_pose_adjust.py` | Run low-amplitude body/foot adjustment | High | `python examples/06_robot_adjust/safe_pose_adjust.py --yes` |
 | `06_robot_adjust/custom_action.py` | Run custom sniff-like robot-adjustment action | High | `python examples/06_robot_adjust/custom_action.py --yes` |
 

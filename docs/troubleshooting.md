@@ -44,7 +44,7 @@ Check:
 - `DEV_PC_AUDIO_WS_ENABLE` is enabled in firmware.
 - `DEV_PC_AUDIO_WS_URL` points to the PC LAN IP.
 - PC and robot are on the same LAN.
-- Firewall allows the selected port, for example `8765`.
+- Firewall allows the selected port, for example `8766`.
 - Host script is already listening before the robot connects.
 
 ## Audio Device Error

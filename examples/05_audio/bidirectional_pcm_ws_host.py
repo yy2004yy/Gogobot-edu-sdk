@@ -9,7 +9,7 @@ Dependencies:
 Firmware:
     DEV_PC_AUDIO_WS_ENABLE=1 and DEV_PC_AUDIO_WS_URL points to this PC.
 Run:
-    python examples/05_audio/bidirectional_pcm_ws_host.py --bind 0.0.0.0 --port 8765
+    python examples/05_audio/bidirectional_pcm_ws_host.py --bind 0.0.0.0 --port 8766
     python examples/05_audio/bidirectional_pcm_ws_host.py --no-audio
 Expected result:
     The terminal reports the robot WebSocket connection and audio frame flow.
@@ -176,7 +176,7 @@ async def handle_client(
 def main() -> int:
     parser = argparse.ArgumentParser(description="Gogobot EDU bidirectional PCM WebSocket host")
     parser.add_argument("--bind", default="0.0.0.0", help="bind address")
-    parser.add_argument("--port", type=int, default=8765, help="bind port")
+    parser.add_argument("--port", type=int, default=8766, help="bind port")
     parser.add_argument("--timeout", type=float, default=0.0, help="auto-exit after seconds; 0 runs forever")
     parser.add_argument("--no-audio", action="store_true", help="print uplink byte counts only")
     parser.add_argument("--input-device", type=int, default=None, help="sounddevice input device index")
