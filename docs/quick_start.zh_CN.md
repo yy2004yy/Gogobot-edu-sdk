@@ -64,10 +64,11 @@ with AiDog() as dog:
 
 ## 5. 下一步示例
 
-- `examples/01_connect.py`：BLE 扫描和连接。
-- `examples/02_actions.py`：动作、耳朵、表情和提示音。
-- `examples/03_movement.py`：方向运动。
-- `examples/05_imu_read.py`：IMU 数据流。
-- `examples/06_tof_read.py`：TOF 数据流。
+- `examples/01_connection/scan_and_connect.py`：BLE 扫描和连接。
+- `examples/02_actions/basic_actions.py`：执行一个高级动作。
+- `examples/02_actions/ears_expressions_audio.py`：耳朵、表情和提示音。
+- `examples/03_movement/directional_move.py`：方向运动。
+- `examples/04_sensors/imu_read.py`：IMU 数据流。
+- `examples/04_sensors/tof_read.py`：TOF 数据流。
 
 运行运动或高级姿态调节示例前，请先阅读 [安全说明](safety.md)。

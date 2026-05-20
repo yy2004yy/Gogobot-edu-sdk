@@ -42,7 +42,7 @@ host.start()
 Example:
 
 ```bash
-python examples/08_sensor_ws_lan.py --bind 0.0.0.0 --port 8765
+python examples/04_sensors/sensor_ws_lan.py --bind 0.0.0.0 --port 8765
 ```
 
 ## Bidirectional PCM Audio
@@ -56,7 +56,7 @@ Binary WebSocket frames are raw PCM:
 Example:
 
 ```bash
-python examples/04_audio_ws_bidirectional_host.py --bind 0.0.0.0 --port 8765
+python examples/05_audio/bidirectional_pcm_ws_host.py --bind 0.0.0.0 --port 8765
 ```
 
 Use `python -c "import sounddevice as sd; print(sd.query_devices())"` to inspect audio device indices.
