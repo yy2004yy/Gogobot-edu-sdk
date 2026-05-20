@@ -9,7 +9,7 @@ Dependencies:
 Firmware:
     DEV_PC_AUDIO_WS_ENABLE=1 and DEV_PC_AUDIO_WS_URL points to this PC.
 Run:
-    python examples/04_sensors/sensor_ws_lan.py --bind 0.0.0.0 --port 8765
+    python examples/04_sensors/sensor_ws_lan.py --bind 0.0.0.0 --port 8766
     python examples/04_sensors/sensor_ws_lan.py --ble --hz 40
 Expected result:
     The terminal prints LAN IMU/TOF data when the robot connects.
@@ -34,7 +34,7 @@ from aidog_sdk import AiDog, DevPcWebSocketHost
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read IMU/TOF via Dev PC WebSocket")
     parser.add_argument("--bind", default="0.0.0.0", help="listen address")
-    parser.add_argument("--port", type=int, default=8765, help="listen port")
+    parser.add_argument("--port", type=int, default=8766, help="listen port")
     parser.add_argument("--ble", action="store_true", help="also connect BLE to request stream rates")
     parser.add_argument("--name-prefix", default="Changba-Ai-Dog", help="BLE name prefix when --ble")
     parser.add_argument("--address", default=None, help="BLE address or platform UUID when --ble")

@@ -70,7 +70,7 @@ class DevPcWebSocketHost:
     def __init__(
         self,
         host: str = "0.0.0.0",
-        port: int = 8765,
+        port: int = 8766,
         *,
         dog: Optional[AiDog] = None,
         on_imu: Optional[Callable[[Dict[str, object]], None]] = None,

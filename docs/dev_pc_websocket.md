@@ -8,7 +8,7 @@ In firmware `app_config.h`:
 
 ```c
 #define DEV_PC_AUDIO_WS_ENABLE 1
-#define DEV_PC_AUDIO_WS_URL "ws://<PC_LAN_IP>:8765"
+#define DEV_PC_AUDIO_WS_URL "ws://<PC_LAN_IP>:8766"
 ```
 
 The PC and robot must be on the same LAN, and the port must match the host script.
@@ -35,14 +35,14 @@ dog = AiDog()
 def on_imu(imu: dict):
     print("imu", imu)
 
-host = DevPcWebSocketHost(host="0.0.0.0", port=8765, dog=dog, on_imu=on_imu)
+host = DevPcWebSocketHost(host="0.0.0.0", port=8766, dog=dog, on_imu=on_imu)
 host.start()
 ```
 
 Example:
 
 ```bash
-python examples/04_sensors/sensor_ws_lan.py --bind 0.0.0.0 --port 8765
+python examples/04_sensors/sensor_ws_lan.py --bind 0.0.0.0 --port 8766
 ```
 
 ## Bidirectional PCM Audio
@@ -56,7 +56,7 @@ Binary WebSocket frames are raw PCM:
 Example:
 
 ```bash
-python examples/05_audio/bidirectional_pcm_ws_host.py --bind 0.0.0.0 --port 8765
+python examples/05_audio/bidirectional_pcm_ws_host.py --bind 0.0.0.0 --port 8766
 ```
 
 Use `python -c "import sounddevice as sd; print(sd.query_devices())"` to inspect audio device indices.
