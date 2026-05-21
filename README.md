@@ -41,6 +41,22 @@ pip install -e ".[dev_pc_ws]"
 pip install -e ".[bidir_audio]"
 ```
 
+Development tools:
+
+```bash
+pip install -e ".[dev]"
+```
+
+Common checks:
+
+```bash
+pytest
+ruff check .
+mypy aidog_sdk
+python -m build
+twine check dist/*
+```
+
 ## Quick Start
 
 ```python

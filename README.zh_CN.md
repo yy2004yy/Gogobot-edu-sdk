@@ -41,6 +41,22 @@ pip install -e ".[dev_pc_ws]"
 pip install -e ".[bidir_audio]"
 ```
 
+开发工具依赖：
+
+```bash
+pip install -e ".[dev]"
+```
+
+常用检查命令：
+
+```bash
+pytest
+ruff check .
+mypy aidog_sdk
+python -m build
+twine check dist/*
+```
+
 ## 快速开始
 
 ```python
