@@ -78,6 +78,19 @@ with AiDog() as dog:
 
 More setup details: [Quick Start](docs/quick_start.en.md).
 
+## Logging
+
+The SDK uses Python `logging` for library messages and does not configure
+handlers by default. Enable logs in your application when needed:
+
+```python
+import logging
+
+logging.basicConfig(level=logging.INFO)
+```
+
+Use `logging.DEBUG` when troubleshooting BLE discovery and notification setup.
+
 ## Examples
 
 | File | Purpose | Risk |

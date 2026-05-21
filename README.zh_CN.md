@@ -78,6 +78,19 @@ with AiDog() as dog:
 
 详细说明见：[快速开始](docs/quick_start.zh_CN.md)。
 
+## 日志
+
+SDK 库代码使用 Python `logging` 输出信息，默认不主动配置日志处理器。
+需要查看连接信息时，可以在应用入口打开日志：
+
+```python
+import logging
+
+logging.basicConfig(level=logging.INFO)
+```
+
+排查 BLE 扫描和通知订阅细节时，可以改用 `logging.DEBUG`。
+
 ## 示例
 
 | 文件 | 用途 | 风险等级 |

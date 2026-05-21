@@ -7,11 +7,14 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import threading
 import time
 from typing import Callable, List, Optional, Tuple
 
 from bleak import BleakClient, BleakScanner
+
+logger = logging.getLogger(__name__)
 
 # Characteristic UUID suffixes/prefixes
 _UUID_NOTIFY  = "ae02"   # ae02 → subscribe for device→host notifications
@@ -122,9 +125,12 @@ class BleTransport:
             except Exception as e:
                 last_exc = e
                 if i < attempts - 1:
-                    print(
-                        f"[BLE] Connect attempt {i + 1}/{attempts} failed: {e}. "
-                        f"Retrying in {retry_delay_s:.1f}s..."
+                    logger.warning(
+                        "BLE connect attempt %s/%s failed: %s. Retrying in %.1fs...",
+                        i + 1,
+                        attempts,
+                        e,
+                        retry_delay_s,
                     )
                     time.sleep(max(0.0, retry_delay_s))
         if last_exc:
@@ -145,7 +151,7 @@ class BleTransport:
         # Windows WinRT BLE backend requires the device to be present in the
         # scanner cache before connect() will succeed.  A short scan here
         # populates that cache so a direct-address connect works reliably.
-        print(f"[BLE] Pre-scanning to discover {address} ...")
+        logger.debug("BLE pre-scanning to discover %s", address)
         await BleakScanner.discover(timeout=3.0)
 
         client = BleakClient(address)
@@ -172,7 +178,10 @@ class BleTransport:
 
         self._client = client
         if self._notify_uuids:
-            print(f"[BLE] Subscribing notify uuids: {', '.join(str(x) for x in self._notify_uuids)}")
+            logger.debug(
+                "BLE subscribing notify uuids: %s",
+                ", ".join(str(x) for x in self._notify_uuids),
+            )
         return client.is_connected
 
     def disconnect(self) -> None:
