@@ -17,8 +17,9 @@ Typical usage::
 
 from __future__ import annotations
 
-import math
 import json
+import logging
+import math
 import struct
 import threading
 import time
@@ -27,6 +28,8 @@ from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from ._ble import BleTransport
 from .actions import COUNT_BASED, TIMER_BASED, Action, EarAction, ExpressionAction, Tone, resolve_action
+
+logger = logging.getLogger(__name__)
 
 # Binary mode constants
 MODE_SPORT = 0x01
@@ -303,17 +306,17 @@ class AiDog:
                 )
             # Pick the first match; surface choices to the caller via scan() if needed
             name, address = devices[0]
-            print(f"[AiDog] Found device: {name} ({address})")
+            logger.info("Found device: %s (%s)", name, address)
 
         ok = self._ble.connect(address, retries=retries, retry_delay_s=retry_delay_s)
         if not ok:
             raise ConnectionError(f"Failed to connect to {address}.")
-        print(f"[AiDog] Connected to {address}")
+        logger.info("Connected to %s", address)
 
     def disconnect(self) -> None:
         """Disconnect from the device and release BLE resources."""
         self._ble.disconnect()
-        print("[AiDog] Disconnected.")
+        logger.info("Disconnected.")
 
     def shutdown(self) -> None:
         """Disconnect and stop the background asyncio thread."""
