@@ -27,7 +27,16 @@ from enum import IntEnum
 from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 from ._ble import BleTransport
-from .actions import COUNT_BASED, TIMER_BASED, Action, EarAction, ExpressionAction, Tone, resolve_action
+from .actions import (
+    ANGLE_BASED,
+    COUNT_BASED,
+    TIMER_BASED,
+    Action,
+    EarAction,
+    ExpressionAction,
+    Tone,
+    resolve_action,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -334,6 +343,7 @@ class AiDog:
         *,
         duration: Optional[int] = None,
         count: Optional[int] = None,
+        angle: Optional[int] = None,
         timeout_s: float = 20.0,
         require_running_state: bool = True,
     ) -> bool:
@@ -348,6 +358,7 @@ class AiDog:
         Parameters:
         - duration: For TIMER_BASED actions, sent to firmware as action param (uint8 seconds).
         - count: For COUNT_BASED actions, sent to firmware as action param (uint8 repeats).
+        - angle: For ANGLE_BASED actions, sent to firmware as action param (uint16 degrees).
         """
         # Ensure previous interaction has reached idle before dispatching a new one.
         # This reduces overlap/race between consecutive interaction actions.
@@ -357,12 +368,16 @@ class AiDog:
         action_param: Optional[int] = None
         is_count_based = False
         is_timer_based = False
+        is_angle_based = False
         if count is not None and act in COUNT_BASED:
             action_param = max(1, min(255, int(count)))
             is_count_based = True
         elif duration is not None and act in TIMER_BASED:
             action_param = max(1, min(255, int(duration)))
             is_timer_based = True
+        elif angle is not None and act in ANGLE_BASED:
+            action_param = max(1, min(360, int(angle)))
+            is_angle_based = True
 
         # With firmware-side param control enabled, one command is enough:
         # - with param -> firmware handles repeat/time internally
@@ -376,6 +391,9 @@ class AiDog:
             # Count-based interactions (e.g. shake_hand xN) can be long.
             # Reserve ~4s per repeat plus small fixed overhead.
             wait_timeout = max(wait_timeout, float(action_param) * 4.0 + 3.0)
+        elif action_param is not None and is_angle_based:
+            # Firmware angle turn loop has a 12s safety timeout, plus stop settling.
+            wait_timeout = max(wait_timeout, 15.0)
 
         for _ in range(repeat):
             with self._notify_lock:
@@ -543,9 +561,18 @@ class AiDog:
 
     def send_interaction(self, action_id: int, param: Optional[int] = None) -> None:
         """Send interaction action with optional param."""
-        data = [action_id & 0xFF]
+        action_value = int(action_id)
+        data = [action_value & 0xFF]
         if param is not None:
-            data.append(max(0, min(255, int(param))))
+            try:
+                is_angle_action = Action(action_value) in ANGLE_BASED
+            except ValueError:
+                is_angle_action = False
+            if is_angle_action:
+                value = max(0, min(65535, int(param)))
+                data.extend([value & 0xFF, (value >> 8) & 0xFF])
+            else:
+                data.append(max(0, min(255, int(param))))
         self._ble.send_data(MODE_INTERACTION, data)
 
     def send_ear(self, ear_action_id: Union[int, EarAction]) -> None:

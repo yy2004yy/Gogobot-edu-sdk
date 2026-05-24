@@ -66,7 +66,7 @@ with AiDog() as dog:
 - `examples/02_actions/basic_actions.py`: one high-level action.
 - `examples/02_actions/ears_expressions_audio.py`: ears, expressions, and tones.
 - `examples/03_movement/directional_move.py`: directional movement.
-- `examples/04_sensors/imu_read.py`: IMU stream.
-- `examples/04_sensors/tof_read.py`: TOF stream.
+- `examples/04_sensors/imu_ble_read.py`: BLE IMU stream.
+- `examples/04_sensors/tof_ble_read.py`: BLE TOF stream.
 
 Read [Safety Guide](safety.md) before running movement or robot adjustment examples.

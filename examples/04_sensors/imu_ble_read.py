@@ -7,7 +7,8 @@ Risk level:
 Dependencies:
     pip install -e .
 Run:
-    python examples/04_sensors/imu_read.py --hz 20
+    python examples/04_sensors/imu_ble_read.py --hz 20
+    python examples/04_sensors/imu_ble_read.py --mode raw --raw both
 Expected result:
     The terminal prints IMU data until stopped.
 Exit:
@@ -44,7 +45,7 @@ def build_imu_printer(mode: str, raw: str) -> Callable[[Dict[str, object]], None
             if raw == "gyro":
                 print(f"[IMU] gyro={gyro}")
             elif raw == "both":
-                print(f"[IMU] accel={accel} gyro={gyro}")
+                print(f"[IMU] accel={accel};  gyro={gyro}")
             else:
                 print(f"[IMU] accel={accel}")
             return
@@ -54,8 +55,8 @@ def build_imu_printer(mode: str, raw: str) -> Callable[[Dict[str, object]], None
         roll = imu.get("roll_deg")
         if all(isinstance(v, (int, float)) for v in (yaw, pitch, roll)):
             print(
-                f"[IMU] yaw={float(yaw):8.3f}deg "
-                f"pitch={float(pitch):8.3f}deg roll={float(roll):8.3f}deg"
+                f"[IMU] yaw={float(yaw):7.3f}deg;   "
+                f"pitch={float(pitch):7.3f}deg;   roll={float(roll):7.3f}deg;"
             )
         else:
             print("[IMU]", imu)

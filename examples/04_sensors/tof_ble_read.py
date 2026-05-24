@@ -7,7 +7,7 @@ Risk level:
 Dependencies:
     pip install -e .
 Run:
-    python examples/04_sensors/tof_read.py --hz 20 --mode both
+    python examples/04_sensors/tof_ble_read.py --hz 20 --mode both
 Expected result:
     The terminal prints TOF distance readings until stopped.
 Exit:
@@ -45,7 +45,7 @@ def build_tof_printer(mode: str) -> Callable[[Dict[str, object]], None]:
         elif mode == "oblique":
             print(f"[TOF] oblique={oblique}mm")
         else:
-            print(f"[TOF] front={front}mm oblique={oblique}mm")
+            print(f"[TOF] front={front}mm;  oblique={oblique}mm")
 
     return print_tof
 

@@ -1,6 +1,13 @@
 """
 Action definitions for the Changba AI-Dog.
 
+Use :class:`Action` members in application code when possible. String aliases
+in ``ACTION_ALIASES`` are accepted by ``resolve_action()`` and
+``AiDog.perform_action()`` for examples, scripts, and Chinese/English user
+input. ``TIMER_BASED`` actions use a ``duration`` parameter in seconds,
+``COUNT_BASED`` actions use a repeat ``count``, and ``ANGLE_BASED`` actions use
+an ``angle`` parameter in degrees.
+
 The integer values match the ``QRMotion_TypeDef`` enum in the firmware
 (sdk/apps/ai_dog/algorithm/interaction_mode/include/interaction_mode.h).
 """
@@ -73,14 +80,30 @@ class Action(IntEnum):
     ACTION_SEQUENCE_3                = 49  # Action sequence 3
     ACTION_SEQUENCE_4                = 50  # Action sequence 4
 
-    KEEP_IN_INTERACTION_MODE         = 51  # Keep interaction mode active (e.g., during charging)
+    SWING_LEFT_AND_RIGHT             = 52  # Swing left and right
+    SWING_LEFT                       = 53  # Swing left
+    SWING_RIGHT                      = 54  # Swing right
+    EXCITED_INSPACE                  = 55  # Excited in-place motion
+    LAZY_PAT_PAT                     = 56  # Lazy pat-pat motion
+    CHEEKY_PAW                       = 57  # Cheeky paw motion
+    WHINING                          = 58  # Whining motion
+    SNIFF_FORWARD_INTERACTION        = 59  # Sniff forward (timed)
+    SPACE_BACKWARD_INTERACTION       = 60  # Space-walk backward (timed)
+    SNIFF_LEFT_INTERACTION           = 61  # Sniff left turn (timed)
+    SNIFF_RIGHT_INTERACTION          = 62  # Sniff right turn (timed)
+    SNIFF_STEP_INTERACTION           = 63  # Sniff step in place (timed)
+    LEFT_ANGLE_INTERACTION           = 64  # Turn left by angle
+    RIGHT_ANGLE_INTERACTION          = 65  # Turn right by angle
 
     # aliases (same numeric IDs)
+    KEEP_IN_INTERACTION_MODE = 51
     STEP = 29
     FORWARD = 30
     BACK = 31
     LEFT = 32
     RIGHT = 33
+    LEFT_ANGLE = 64
+    RIGHT_ANGLE = 65
     STOP = 39
     LIGHT_ON_INTERACTION = 45
     LIGHT_OFF_INTERACTION = 46
@@ -105,6 +128,11 @@ TIMER_BASED: Set[Action] = {
     Action.DANCE,
     Action.SLOW_DOWN_FOR_PROGRAM,
     Action.SIT_DOWN_FOR_PROGRAM,
+    Action.SNIFF_FORWARD_INTERACTION,
+    Action.SPACE_BACKWARD_INTERACTION,
+    Action.SNIFF_LEFT_INTERACTION,
+    Action.SNIFF_RIGHT_INTERACTION,
+    Action.SNIFF_STEP_INTERACTION,
 }
 
 # Actions that take a *count* parameter (number of repetitions)
@@ -122,6 +150,12 @@ COUNT_BASED: Set[Action] = {
     Action.STOMP,
     Action.CELEBRATE,
     Action.FLAILING,
+}
+
+# Actions that take an *angle* parameter (degrees)
+ANGLE_BASED: Set[Action] = {
+    Action.LEFT_ANGLE_INTERACTION,
+    Action.RIGHT_ANGLE_INTERACTION,
 }
 
 # ---------------------------------------------------------------------------
@@ -160,6 +194,10 @@ ACTION_ALIASES: Dict[str, Action] = {
     "walk_back":                  Action.BACK_INTERACTION,
     "turn_left":                  Action.LEFT_INTERACTION,
     "turn_right":                 Action.RIGHT_INTERACTION,
+    "turn_left_angle":            Action.LEFT_ANGLE_INTERACTION,
+    "turn_right_angle":           Action.RIGHT_ANGLE_INTERACTION,
+    "left_angle":                 Action.LEFT_ANGLE_INTERACTION,
+    "right_angle":                Action.RIGHT_ANGLE_INTERACTION,
     "low_forward":                Action.LOW_FORWARD,
     "low_backward":               Action.LOW_BACKWARD,
     "low_left":                   Action.LOW_LEFT,
@@ -171,6 +209,23 @@ ACTION_ALIASES: Dict[str, Action] = {
     "rollover_recovery_left":     Action.ROLLOVER_RECOVERY_LEFT,
     "light_on_interaction":       Action.LIGHT_ON_INTERACTION,
     "light_off_interaction":      Action.LIGHT_OFF_INTERACTION,
+    "swing_left_and_right":       Action.SWING_LEFT_AND_RIGHT,
+    "swing_left":                 Action.SWING_LEFT,
+    "swing_right":                Action.SWING_RIGHT,
+    "excited_inspace":            Action.EXCITED_INSPACE,
+    "lazy_pat_pat":               Action.LAZY_PAT_PAT,
+    "cheeky_paw":                 Action.CHEEKY_PAW,
+    "whining":                    Action.WHINING,
+    "sniff_forward":              Action.SNIFF_FORWARD_INTERACTION,
+    "space_backward":             Action.SPACE_BACKWARD_INTERACTION,
+    "sniff_left":                 Action.SNIFF_LEFT_INTERACTION,
+    "sniff_right":                Action.SNIFF_RIGHT_INTERACTION,
+    "sniff_step":                 Action.SNIFF_STEP_INTERACTION,
+    "sniff_forward_interaction":  Action.SNIFF_FORWARD_INTERACTION,
+    "space_backward_interaction": Action.SPACE_BACKWARD_INTERACTION,
+    "sniff_left_interaction":     Action.SNIFF_LEFT_INTERACTION,
+    "sniff_right_interaction":    Action.SNIFF_RIGHT_INTERACTION,
+    "sniff_step_interaction":     Action.SNIFF_STEP_INTERACTION,
     # Chinese names
     "坐下":   Action.SIT_DOWN,
     "站起":   Action.STAND_UP,
@@ -194,9 +249,22 @@ ACTION_ALIASES: Dict[str, Action] = {
     "后退":   Action.BACK_INTERACTION,
     "左转":   Action.LEFT_INTERACTION,
     "右转":   Action.RIGHT_INTERACTION,
+    "左转指定角度": Action.LEFT_ANGLE_INTERACTION,
+    "右转指定角度": Action.RIGHT_ANGLE_INTERACTION,
     "停止":   Action.STOP_INTERACTION,
     "开灯":   Action.LIGHT_ON,
     "关灯":   Action.LIGHT_OFF,
+    "左右摇摆": Action.SWING_LEFT_AND_RIGHT,
+    "左摇摆": Action.SWING_LEFT,
+    "右摇摆": Action.SWING_RIGHT,
+    "太空步后退": Action.SPACE_BACKWARD_INTERACTION,
+    "撒娇拍桌面": Action.LAZY_PAT_PAT,
+    "脸颊招财": Action.CHEEKY_PAW,
+    "撒泼打滚": Action.WHINING,
+    "嗅探前进": Action.SNIFF_FORWARD_INTERACTION,
+    "嗅探左转": Action.SNIFF_LEFT_INTERACTION,
+    "嗅探右转": Action.SNIFF_RIGHT_INTERACTION,
+    "嗅探踏步": Action.SNIFF_STEP_INTERACTION,
 }
 
 INTERACTION_ACTION_NAMES: List[str] = [
@@ -209,6 +277,11 @@ INTERACTION_ACTION_NAMES: List[str] = [
     "ROLLOVER_RECOVERY_RIGHT", "ROLLOVER_RECOVERY_LEFT", "FLAILING", "STOP_FLAILING",
     "LIGHT_ON_INTERACTION", "LIGHT_OFF_INTERACTION", "ACTION_SEQUENCE_1", "ACTION_SEQUENCE_2",
     "ACTION_SEQUENCE_3", "ACTION_SEQUENCE_4",
+    "KEEP_IN_INTERACTION_MODE", "SWING_LEFT_AND_RIGHT", "SWING_LEFT", "SWING_RIGHT",
+    "EXCITED_INSPACE", "LAZY_PAT_PAT", "CHEEKY_PAW", "WHINING",
+    "SNIFF_FORWARD_INTERACTION", "SPACE_BACKWARD_INTERACTION", "SNIFF_LEFT_INTERACTION",
+    "SNIFF_RIGHT_INTERACTION", "SNIFF_STEP_INTERACTION", "LEFT_ANGLE_INTERACTION",
+    "RIGHT_ANGLE_INTERACTION",
 ]
 
 
