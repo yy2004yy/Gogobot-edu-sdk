@@ -113,6 +113,7 @@ Full example index: [Examples](examples/README.md).
 ## Documentation
 
 - [Quick Start](docs/quick_start.en.md)
+- [Demo Videos](docs/demo_videos.md)
 - [BLE Connection Guide](docs/connection_ble.md)
 - [API Reference](docs/api_reference.md)
 - [BLE Protocol Reference](docs/protocol_ble.md)
