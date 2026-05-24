@@ -20,7 +20,6 @@ import argparse
 import sys
 import time
 from pathlib import Path
-from typing import Optional
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -44,48 +43,6 @@ def require_confirmation(yes: bool) -> None:
         raise SystemExit("Cancelled.")
 
 
-def read_yaw_deg(dog: AiDog) -> Optional[float]:
-    imu = dog.get_latest_imu()
-    if imu is None:
-        return None
-    yaw = imu.get("yaw_deg")
-    return float(yaw) if isinstance(yaw, (int, float)) else None
-
-
-def wait_yaw(dog: AiDog, timeout_s: float) -> Optional[float]:
-    deadline = time.time() + timeout_s
-    while time.time() < deadline:
-        yaw = read_yaw_deg(dog)
-        if yaw is not None:
-            return yaw
-        time.sleep(0.05)
-    return None
-
-
-def heading_distance_deg(a: float, b: float) -> float:
-    return abs((a - b + 180.0) % 360.0 - 180.0)
-
-
-def turn_right_180_with_imu(dog: AiDog, timeout_s: float) -> None:
-    start = wait_yaw(dog, timeout_s=3.0)
-    if start is None:
-        print("[show] no IMU yaw; fallback to fixed right turn")
-        dog.send_movement(Movement.RIGHT, duration_s=min(5.0, timeout_s))
-        return
-
-    target = start - 180.0
-    dog.send_movement(Movement.RIGHT)
-    deadline = time.time() + timeout_s
-    try:
-        while time.time() < deadline:
-            current = read_yaw_deg(dog)
-            if current is not None and heading_distance_deg(current, target) <= 15.0:
-                break
-            time.sleep(0.05)
-    finally:
-        dog.stop_movement()
-
-
 def forward_with_tone(dog: AiDog, seconds: float, tone: Tone) -> None:
     dog.send_audio(tone)
     time.sleep(0.05)
@@ -101,7 +58,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Run a Gogobot EDU choreography")
     parser.add_argument("--name-prefix", default="Changba-Ai-Dog", help="BLE name prefix")
     parser.add_argument("--address", default=None, help="BLE address or platform UUID")
-    parser.add_argument("--hz", type=int, default=20, help="IMU stream rate")
     parser.add_argument("--timeout", type=float, default=30.0, help="turn/action timeout")
     parser.add_argument("--yes", action="store_true", help="run without interactive confirmation")
     args = parser.parse_args()
@@ -113,7 +69,6 @@ def main() -> int:
         connect_robot(dog, args.name_prefix, args.address)
         try:
             dog.set_special_detection(False)
-            dog.request_imu_stream(True, hz=max(1, min(200, args.hz)))
 
             print("[show] ears + expression")
             dog.send_ear(EarAction.EAR_STAND)
@@ -121,16 +76,21 @@ def main() -> int:
             time.sleep(1.0)
 
             print("[show] shake hand")
-            dog.perform_action(Action.SHAKE_HAND, count=1, timeout_s=args.timeout)
+            dog.perform_action(Action.SHAKE_HAND, count=3, timeout_s=args.timeout)
 
             print("[show] nod")
             dog.perform_action(Action.NOD, count=3, timeout_s=args.timeout)
 
             print("[show] forward + tone")
-            forward_with_tone(dog, 5.0, Tone.BEAT1)
+            forward_with_tone(dog, 6.0, Tone.BEAT1)
 
-            print("[show] right turn")
-            turn_right_180_with_imu(dog, timeout_s=args.timeout)
+            print("[show] right turn 180 deg")
+            dog.perform_action(
+                Action.RIGHT_ANGLE_INTERACTION,
+                angle=180,
+                timeout_s=args.timeout,
+                require_running_state=False,
+            )
 
             print("[show] wag tail")
             dog.perform_action(Action.WAG_TAIL, count=2, timeout_s=args.timeout)
@@ -144,7 +104,6 @@ def main() -> int:
             try:
                 dog.stop_movement()
                 dog.send_audio(Tone.STOP)
-                dog.request_imu_stream(False)
                 dog.set_special_detection(True)
             except Exception:
                 pass

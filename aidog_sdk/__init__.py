@@ -31,6 +31,7 @@ from .dog import (
 )
 from .actions import (
     ACTION_ALIASES,
+    ANGLE_BASED,
     COUNT_BASED,
     EAR_ACTION_NAMES,
     EXPRESSION_ACTION_NAMES,
@@ -66,6 +67,7 @@ __all__ = [
     "EXPRESSION_ACTION_NAMES",
     "TONE_LIST",
     "ACTION_ALIASES",
+    "ANGLE_BASED",
     "TIMER_BASED",
     "COUNT_BASED",
     "resolve_action",

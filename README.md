@@ -100,9 +100,10 @@ Use `logging.DEBUG` when troubleshooting BLE discovery and notification setup.
 | `examples/02_actions/basic_actions.py` | Run one high-level action | Medium |
 | `examples/02_actions/ears_expressions_audio.py` | Ears, expressions, tones | Low/Medium |
 | `examples/03_movement/directional_move.py` | Directional movement | Medium |
-| `examples/04_sensors/imu_read.py` | Subscribe to IMU JSON on `ae04` | Low |
-| `examples/04_sensors/tof_read.py` | Subscribe to TOF JSON on `ae04` | Low |
-| `examples/04_sensors/sensor_ws_lan.py` | IMU/TOF over LAN via Dev PC WebSocket | Low |
+| `examples/04_sensors/imu_ble_read.py` | Subscribe to IMU JSON over BLE `ae04` | Low |
+| `examples/04_sensors/tof_ble_read.py` | Subscribe to TOF JSON over BLE `ae04` | Low |
+| `examples/04_sensors/imu_ws_lan_read.py` | IMU over LAN via Dev PC WebSocket | Low |
+| `examples/04_sensors/tof_ws_lan_read.py` | TOF over LAN via Dev PC WebSocket | Low |
 | `examples/05_audio/bidirectional_pcm_ws_host.py` | Bidirectional PCM WebSocket host | Low |
 | `examples/05_audio/set_volume.py` | Set speaker volume over BLE | Low |
 | `examples/06_robot_adjust/safe_pose_adjust.py` | Smooth pose / foot / joint adjustment | High |

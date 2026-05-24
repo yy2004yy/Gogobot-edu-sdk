@@ -42,7 +42,8 @@ host.start()
 Example:
 
 ```bash
-python examples/04_sensors/sensor_ws_lan.py --bind 0.0.0.0 --port 8766
+python examples/04_sensors/imu_ws_lan_read.py --bind 0.0.0.0 --port 8766
+python examples/04_sensors/tof_ws_lan_read.py --bind 0.0.0.0 --port 8766
 ```
 
 ## Bidirectional PCM Audio

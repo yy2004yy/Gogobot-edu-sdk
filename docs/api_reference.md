@@ -16,13 +16,45 @@ This page summarizes the public APIs exported from `aidog_sdk`.
 
 | API | Description |
 |---|---|
-| `perform_action(action, duration=None, count=None, timeout_s=20.0)` | Send an interaction action and wait for completion feedback |
+| `perform_action(action, duration=None, count=None, angle=None, timeout_s=20.0)` | Send an interaction action and wait for completion feedback |
 | `send_interaction(action_id, param=None)` | Send raw interaction action ID |
 | `send_movement(direction, duration_s=None)` | Start movement; optionally auto-stop after a duration |
 | `start_movement(direction)` | Start movement in a direction |
 | `stop_movement()` | Stop movement |
 | `reset()` | Stop movement and send interaction stop |
 | `move(direction_deg, velocity=1.0)` | Compatibility wrapper for angle-based movement input |
+
+### Action Inputs
+
+`perform_action()` accepts an `Action` enum member, a string from
+`ACTION_ALIASES`, or an integer firmware action ID. Prefer enum members in
+application code; use strings for user-facing input and integers for protocol
+compatibility.
+
+```python
+dog.perform_action(Action.SIT_DOWN)
+dog.perform_action("sit_down")
+dog.perform_action("坐下")
+dog.perform_action(7)
+```
+
+One optional firmware parameter can be sent with supported actions:
+
+| Action set | Parameter | Meaning |
+|---|---|---|
+| `TIMER_BASED` | `duration` | Seconds, clamped to `1-255` |
+| `COUNT_BASED` | `count` | Repetitions, clamped to `1-255` |
+| `ANGLE_BASED` | `angle` | Degrees, clamped to `1-360` |
+
+```python
+dog.perform_action(Action.FORWARD_INTERACTION, duration=3)
+dog.perform_action(Action.SHAKE_HAND, count=2)
+dog.perform_action(Action.RIGHT_ANGLE_INTERACTION, angle=180)
+dog.perform_action("turn_left_angle", angle=90)
+```
+
+If `duration`, `count`, or `angle` is passed to an action outside its matching
+set, the SDK sends the action without that parameter.
 
 ## Ears, Expression, Audio
 
@@ -83,4 +115,7 @@ These APIs require matching firmware support and should be treated as advanced c
 - `EXPRESSION_ACTION_NAMES`
 - `TONE_LIST`
 - `ACTION_ALIASES`
+- `ANGLE_BASED`
+- `COUNT_BASED`
+- `TIMER_BASED`
 - `resolve_action`

@@ -9,6 +9,8 @@ Dependencies:
 Run:
     python examples/02_actions/basic_actions.py
     python examples/02_actions/basic_actions.py --address AA:BB:CC:DD:EE:FF --action shake_hand
+    python examples/02_actions/basic_actions.py --address AA:BB:CC:DD:EE:FF --action turn_left_angle --angle 90
+    python examples/02_actions/basic_actions.py --address AA:BB:CC:DD:EE:FF --action turn_right_angle --angle 180
 Expected result:
     The robot performs the requested action and prints completion status.
 Exit:
@@ -42,7 +44,8 @@ def main() -> int:
     parser.add_argument("--action", default="sit_down", help="action name or numeric ID")
     parser.add_argument("--count", type=int, default=None, help="optional repeat count for count actions")
     parser.add_argument("--duration", type=int, default=None, help="optional duration for timed actions")
-    parser.add_argument("--timeout", type=float, default=20.0, help="action wait timeout in seconds")
+    parser.add_argument("--angle", type=int, default=None, help="optional angle for angle actions")
+    parser.add_argument("--timeout", type=float, default=10.0, help="action wait timeout in seconds")
     args = parser.parse_args()
 
     with AiDog() as dog:
@@ -53,6 +56,7 @@ def main() -> int:
             action,
             count=args.count,
             duration=args.duration,
+            angle=args.angle,
             timeout_s=args.timeout,
         )
         print(f"[action] done={ok}")

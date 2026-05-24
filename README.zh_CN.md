@@ -100,9 +100,10 @@ logging.basicConfig(level=logging.INFO)
 | `examples/02_actions/basic_actions.py` | 执行一个高级动作 | 中 |
 | `examples/02_actions/ears_expressions_audio.py` | 耳朵、表情、提示音 | 低/中 |
 | `examples/03_movement/directional_move.py` | 方向运动 | 中 |
-| `examples/04_sensors/imu_read.py` | 订阅 `ae04` IMU JSON | 低 |
-| `examples/04_sensors/tof_read.py` | 订阅 `ae04` TOF JSON | 低 |
-| `examples/04_sensors/sensor_ws_lan.py` | 局域网 WebSocket 接收 IMU/TOF | 低 |
+| `examples/04_sensors/imu_ble_read.py` | 通过 BLE `ae04` 订阅 IMU JSON | 低 |
+| `examples/04_sensors/tof_ble_read.py` | 通过 BLE `ae04` 订阅 TOF JSON | 低 |
+| `examples/04_sensors/imu_ws_lan_read.py` | 通过局域网 WebSocket 接收 IMU | 低 |
+| `examples/04_sensors/tof_ws_lan_read.py` | 通过局域网 WebSocket 接收 TOF | 低 |
 | `examples/05_audio/bidirectional_pcm_ws_host.py` | 双向 PCM WebSocket 上位机 | 低 |
 | `examples/05_audio/set_volume.py` | 通过 BLE 设置扬声器音量 | 低 |
 | `examples/06_robot_adjust/safe_pose_adjust.py` | 机身 / 足端 / 关节平滑调节 | 高 |
