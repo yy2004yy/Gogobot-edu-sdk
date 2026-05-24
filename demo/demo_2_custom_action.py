@@ -56,10 +56,12 @@ def run_sniff_motion(dog: AiDog) -> None:
     time.sleep(0.7)
 
 
-    # Hold the expression and audio effect.
-    dog.send_expression(ExpressionAction.EAT_SNACK)
+    # Hold the expression and audio effect; play EAT_SNACK twice during audio.
     dog.send_audio(Tone.EATING)
-    time.sleep(8.0)
+    dog.send_expression(ExpressionAction.EAT_SNACK)
+    time.sleep(4.0)
+    dog.send_expression(ExpressionAction.EAT_SNACK)
+    time.sleep(4.0)
     dog.send_audio(Tone.STOP)
 
 

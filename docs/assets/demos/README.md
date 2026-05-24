@@ -1,30 +1,20 @@
-# Demo Asset Guide
+# Demo Video Assets
 
-Demo videos help users understand what each SDK example does on the real robot.
+This directory stores demo videos used by the SDK documentation.
 
-## Current Image Assets
+## Current Videos
 
-| Asset | Preview |
-|---|---|
-| `../images/gogo-readme.jpg` | ![Gogobot EDU robot](../images/gogo-readme.jpg) |
-| `../images/logo-text.png` | ![Gogobot EDU text logo](../images/logo-text.png) |
-| `../images/logo2.png` | ![Gogobot EDU icon logo](../images/logo2.png) |
+| File | Related Script | Description |
+|---|---|---|
+| `demo1.mp4` | `demo/demo_1_performance.py` | Full performance routine with ears, expressions, movement, angle turning, slow crouch, stretch, and tail wag. |
+| `demo2.mp4` | `demo/demo_2_custom_action.py` | Custom sniff-like action built from smooth body/foot adjustment, expression, and audio. |
 
-## Recommended Assets
+User-facing playback page: [Demo Videos](../../demo_videos.md).
 
-| File | Content | Related Example | Recommended Length |
-|---|---|---|---|
-| `quick_start_actions.gif` | Sit, shake hand, expression, sound | `examples/02_actions/basic_actions.py` | 10-20 seconds |
-| `movement_demo.gif` | Forward, back, left, right, stop | `examples/03_movement/timed_move.py` | 10-15 seconds |
-| `imu_tof_stream.gif` | Terminal IMU/TOF stream with robot pose or distance change | `examples/04_sensors/imu_ble_read.py`, `examples/04_sensors/tof_ble_read.py` | 15-25 seconds |
-| `dev_pc_websocket_demo.gif` | LAN WebSocket receiving sensor JSON | `examples/04_sensors/imu_ws_lan_read.py`, `examples/04_sensors/tof_ws_lan_read.py` | 15-25 seconds |
-| `bidirectional_audio_demo.gif` | PC microphone/speaker audio loop | `examples/05_audio/bidirectional_pcm_ws_host.py` | 15-25 seconds |
-| `robot_adjust_demo.gif` | Low-amplitude body/foot/joint adjustment | `examples/06_robot_adjust/safe_pose_adjust.py` | 10-15 seconds |
-
-## Guidelines
+## Asset Guidelines
 
 - Prefer real robot footage.
-- Show terminal command/output when it helps users map code to behavior.
-- Keep GIF/WebP previews small enough for GitHub README loading.
-- Store large MP4 files in release assets, CDN, or an official video account, then link them from the docs.
 - Keep file names lowercase and descriptive.
+- Use MP4 for long demos and GIF/WebP only for short README previews.
+- Keep large video assets in this directory or link to an official hosted copy from the docs.
+- When adding a new video, update both this file and `docs/demo_videos.md`.

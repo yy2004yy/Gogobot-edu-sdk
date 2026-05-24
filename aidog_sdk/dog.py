@@ -54,7 +54,7 @@ CONFIG_SET_VOLUME = 1
 _SPECIAL_DETECTION_TOGGLE = 15
 _SPECIAL_DETECTION_ENABLE = 100
 _SPECIAL_DETECTION_DISABLE = 101
-_APP_UNKNOWN_CONTROL_MODE = 5
+_CONTROL_JSON_NOOP_MODE = 5
 
 _RADJ_SUB_POSE = 0x01
 _RADJ_SUB_FOOT = 0x02
@@ -628,7 +628,7 @@ class AiDog:
         ae04 realtime TOF notification stream.
         """
         self._ble.send_control_json(
-            {"mode": _APP_UNKNOWN_CONTROL_MODE, "tof_enable": 1 if enable else 0}
+            {"mode": _CONTROL_JSON_NOOP_MODE, "tof_enable": 1 if enable else 0}
         )
 
     def send_expression(self, expression_id: Union[int, ExpressionAction]) -> None:
