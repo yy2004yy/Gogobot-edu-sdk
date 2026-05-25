@@ -14,8 +14,9 @@ The integer values match the ``QRMotion_TypeDef`` enum in the firmware
 
 from __future__ import annotations
 
-from enum import IntEnum
-from typing import Dict, List, Set, Tuple
+from dataclasses import dataclass
+from enum import Enum, IntEnum
+from typing import Dict, List, Optional, Set, Tuple
 
 
 class Action(IntEnum):
@@ -58,11 +59,11 @@ class Action(IntEnum):
     BACK_INTERACTION                 = 31  # Move backward (timed)
     LEFT_INTERACTION                 = 32  # Turn left (timed)
     RIGHT_INTERACTION                = 33  # Turn right (timed)
-    LOW_FORWARD_AND_BACKWARD         = 34  # Low posture forward/backward (timed)
-    LOW_FORWARD                      = 35  # Low posture forward (timed)
-    LOW_BACKWARD                     = 36  # Low posture backward (timed)
-    LOW_LEFT                         = 37  # Low posture left turn (timed)
-    LOW_RIGHT                        = 38  # Low posture right turn (timed)
+    LOW_FORWARD_AND_BACKWARD_INTERACTION = 34  # Low posture forward/backward
+    LOW_FORWARD_INTERACTION              = 35  # Low posture forward
+    LOW_BACKWARD_INTERACTION             = 36  # Low posture backward
+    LOW_LEFT_INTERACTION                 = 37  # Low posture left turn
+    LOW_RIGHT_INTERACTION                = 38  # Low posture right turn
 
     STOP_INTERACTION                 = 39  # Stop interaction motion
     UP_AND_DOWN_FOR_TEST             = 40  # Up-and-down test motion
@@ -72,8 +73,8 @@ class Action(IntEnum):
     FLAILING                         = 43  # Flailing motion
     STOP_FLAILING                    = 44  # Stop flailing
 
-    LIGHT_ON                         = 45  # Turn flashlight on
-    LIGHT_OFF                        = 46  # Turn flashlight off
+    LIGHT_ON_INTERACTION             = 45  # Turn flashlight on
+    LIGHT_OFF_INTERACTION            = 46  # Turn flashlight off
 
     ACTION_SEQUENCE_1                = 47  # Action sequence 1
     ACTION_SEQUENCE_2                = 48  # Action sequence 2
@@ -97,6 +98,11 @@ class Action(IntEnum):
 
     # aliases (same numeric IDs)
     KEEP_IN_INTERACTION_MODE = 51
+    LOW_FORWARD_AND_BACKWARD = 34
+    LOW_FORWARD = 35
+    LOW_BACKWARD = 36
+    LOW_LEFT = 37
+    LOW_RIGHT = 38
     STEP = 29
     FORWARD = 30
     BACK = 31
@@ -105,57 +111,112 @@ class Action(IntEnum):
     LEFT_ANGLE = 64
     RIGHT_ANGLE = 65
     STOP = 39
-    LIGHT_ON_INTERACTION = 45
-    LIGHT_OFF_INTERACTION = 46
+    LIGHT_ON = 45
+    LIGHT_OFF = 46
 
 
 # ---------------------------------------------------------------------------
-# Interaction-type classification (mirrors firmware _get_interaction_type())
+# Canonical action specs
 # ---------------------------------------------------------------------------
 
-# Actions that take a *duration* parameter (seconds)
-TIMER_BASED: Set[Action] = {
-    Action.STEP_INTERACTION,
-    Action.FORWARD_INTERACTION,
-    Action.BACK_INTERACTION,
-    Action.LEFT_INTERACTION,
-    Action.RIGHT_INTERACTION,
-    Action.LOW_FORWARD_AND_BACKWARD,
-    Action.LOW_FORWARD,
-    Action.LOW_BACKWARD,
-    Action.LOW_LEFT,
-    Action.LOW_RIGHT,
-    Action.DANCE,
-    Action.SLOW_DOWN_FOR_PROGRAM,
-    Action.SIT_DOWN_FOR_PROGRAM,
-    Action.SNIFF_FORWARD_INTERACTION,
-    Action.SPACE_BACKWARD_INTERACTION,
-    Action.SNIFF_LEFT_INTERACTION,
-    Action.SNIFF_RIGHT_INTERACTION,
-    Action.SNIFF_STEP_INTERACTION,
+
+class ParameterType(str, Enum):
+    TIME = "time"
+    COUNT = "count"
+    ANGLE = "angle"
+    NORMAL = "normal"
+
+
+@dataclass(frozen=True)
+class ActionSpec:
+    action: Action
+    parameter_type: ParameterType
+    default: Optional[int]
+    description: str
+
+
+ACTION_SPECS: Dict[Action, ActionSpec] = {
+    Action.IDLE: ActionSpec(Action.IDLE, ParameterType.NORMAL, None, "Idle"),
+    Action.SLOW_UP: ActionSpec(Action.SLOW_UP, ParameterType.NORMAL, None, "Slowly stand up"),
+    Action.SLOW_DOWN: ActionSpec(Action.SLOW_DOWN, ParameterType.NORMAL, None, "Slowly crouch down"),
+    Action.SLOW_DOWN_FOR_CHARGE: ActionSpec(Action.SLOW_DOWN_FOR_CHARGE, ParameterType.NORMAL, None, "Crouch down for charging posture"),
+    Action.SLOW_DOWN_FOR_PROGRAM: ActionSpec(Action.SLOW_DOWN_FOR_PROGRAM, ParameterType.TIME, 5, "Slow crouch for programming flows"),
+    Action.UP_AND_DOWN: ActionSpec(Action.UP_AND_DOWN, ParameterType.COUNT, 3, "Up-and-down motion"),
+    Action.EXCITED_UP_AND_DOWN: ActionSpec(Action.EXCITED_UP_AND_DOWN, ParameterType.NORMAL, None, "Excited up-and-down motion"),
+    Action.SIT_DOWN: ActionSpec(Action.SIT_DOWN, ParameterType.NORMAL, None, "Sit down"),
+    Action.SIT_DOWN_FOR_PROGRAM: ActionSpec(Action.SIT_DOWN_FOR_PROGRAM, ParameterType.TIME, 5, "Sit down for programming flows"),
+    Action.STAND_UP: ActionSpec(Action.STAND_UP, ParameterType.NORMAL, None, "Stand up from sitting posture"),
+    Action.SHAKE_HAND: ActionSpec(Action.SHAKE_HAND, ParameterType.COUNT, 5, "Shake hand"),
+    Action.SHAKE_HAND_WITH_SIT_DOWN: ActionSpec(Action.SHAKE_HAND_WITH_SIT_DOWN, ParameterType.COUNT, 3, "Sit down and shake hand"),
+    Action.NOD: ActionSpec(Action.NOD, ParameterType.COUNT, 2, "Nod"),
+    Action.SHAKE_HEAD: ActionSpec(Action.SHAKE_HEAD, ParameterType.COUNT, 4, "Shake head"),
+    Action.STRETCH: ActionSpec(Action.STRETCH, ParameterType.NORMAL, None, "Stretch"),
+    Action.PEE: ActionSpec(Action.PEE, ParameterType.COUNT, 2, "Simulated urination motion"),
+    Action.TWIST: ActionSpec(Action.TWIST, ParameterType.COUNT, 3, "Twist"),
+    Action.PUSH_UP: ActionSpec(Action.PUSH_UP, ParameterType.COUNT, 3, "Push-up"),
+    Action.NEW_YEAR: ActionSpec(Action.NEW_YEAR, ParameterType.COUNT, 3, "New Year greeting"),
+    Action.WAG_TAIL: ActionSpec(Action.WAG_TAIL, ParameterType.COUNT, 5, "Wag tail"),
+    Action.STOMP: ActionSpec(Action.STOMP, ParameterType.COUNT, 6, "Stomp"),
+    Action.SNIFF: ActionSpec(Action.SNIFF, ParameterType.NORMAL, None, "Sniff"),
+    Action.CELEBRATE: ActionSpec(Action.CELEBRATE, ParameterType.COUNT, 3, "Celebrate"),
+    Action.JUMP: ActionSpec(Action.JUMP, ParameterType.NORMAL, None, "Jump"),
+    Action.DANCE: ActionSpec(Action.DANCE, ParameterType.TIME, 3, "Dance"),
+    Action.KICK_BALL: ActionSpec(Action.KICK_BALL, ParameterType.NORMAL, None, "Kick ball"),
+    Action.TOUCH_GROUND_RIGHT: ActionSpec(Action.TOUCH_GROUND_RIGHT, ParameterType.NORMAL, None, "Touch ground with right paw"),
+    Action.TOUCH_GROUND_LEFT: ActionSpec(Action.TOUCH_GROUND_LEFT, ParameterType.NORMAL, None, "Touch ground with left paw"),
+    Action.PLAY_DEAD: ActionSpec(Action.PLAY_DEAD, ParameterType.NORMAL, None, "Play dead"),
+    Action.STEP_INTERACTION: ActionSpec(Action.STEP_INTERACTION, ParameterType.TIME, 3, "Step in place"),
+    Action.FORWARD_INTERACTION: ActionSpec(Action.FORWARD_INTERACTION, ParameterType.TIME, 3, "Move forward"),
+    Action.BACK_INTERACTION: ActionSpec(Action.BACK_INTERACTION, ParameterType.TIME, 3, "Move backward"),
+    Action.LEFT_INTERACTION: ActionSpec(Action.LEFT_INTERACTION, ParameterType.TIME, 3, "Turn left"),
+    Action.RIGHT_INTERACTION: ActionSpec(Action.RIGHT_INTERACTION, ParameterType.TIME, 3, "Turn right"),
+    Action.LOW_FORWARD_AND_BACKWARD_INTERACTION: ActionSpec(Action.LOW_FORWARD_AND_BACKWARD_INTERACTION, ParameterType.NORMAL, None, "Low posture forward/backward movement"),
+    Action.LOW_FORWARD_INTERACTION: ActionSpec(Action.LOW_FORWARD_INTERACTION, ParameterType.NORMAL, None, "Low posture forward movement"),
+    Action.LOW_BACKWARD_INTERACTION: ActionSpec(Action.LOW_BACKWARD_INTERACTION, ParameterType.NORMAL, None, "Low posture backward movement"),
+    Action.LOW_LEFT_INTERACTION: ActionSpec(Action.LOW_LEFT_INTERACTION, ParameterType.NORMAL, None, "Low posture left turn"),
+    Action.LOW_RIGHT_INTERACTION: ActionSpec(Action.LOW_RIGHT_INTERACTION, ParameterType.NORMAL, None, "Low posture right turn"),
+    Action.STOP_INTERACTION: ActionSpec(Action.STOP_INTERACTION, ParameterType.NORMAL, None, "Stop interaction motion"),
+    Action.UP_AND_DOWN_FOR_TEST: ActionSpec(Action.UP_AND_DOWN_FOR_TEST, ParameterType.NORMAL, None, "Up-and-down test motion"),
+    Action.ROLLOVER_RECOVERY_RIGHT: ActionSpec(Action.ROLLOVER_RECOVERY_RIGHT, ParameterType.NORMAL, None, "Recover from right-side rollover"),
+    Action.ROLLOVER_RECOVERY_LEFT: ActionSpec(Action.ROLLOVER_RECOVERY_LEFT, ParameterType.NORMAL, None, "Recover from left-side rollover"),
+    Action.FLAILING: ActionSpec(Action.FLAILING, ParameterType.COUNT, 4, "Flailing motion"),
+    Action.STOP_FLAILING: ActionSpec(Action.STOP_FLAILING, ParameterType.NORMAL, None, "Stop flailing"),
+    Action.LIGHT_ON_INTERACTION: ActionSpec(Action.LIGHT_ON_INTERACTION, ParameterType.NORMAL, None, "Turn flashlight on"),
+    Action.LIGHT_OFF_INTERACTION: ActionSpec(Action.LIGHT_OFF_INTERACTION, ParameterType.NORMAL, None, "Turn flashlight off"),
+    Action.ACTION_SEQUENCE_1: ActionSpec(Action.ACTION_SEQUENCE_1, ParameterType.NORMAL, None, "Action sequence 1"),
+    Action.ACTION_SEQUENCE_2: ActionSpec(Action.ACTION_SEQUENCE_2, ParameterType.NORMAL, None, "Action sequence 2"),
+    Action.ACTION_SEQUENCE_3: ActionSpec(Action.ACTION_SEQUENCE_3, ParameterType.NORMAL, None, "Action sequence 3"),
+    Action.ACTION_SEQUENCE_4: ActionSpec(Action.ACTION_SEQUENCE_4, ParameterType.NORMAL, None, "Action sequence 4"),
+    Action.SWING_LEFT_AND_RIGHT: ActionSpec(Action.SWING_LEFT_AND_RIGHT, ParameterType.NORMAL, None, "Swing left and right"),
+    Action.SWING_LEFT: ActionSpec(Action.SWING_LEFT, ParameterType.NORMAL, None, "Swing left"),
+    Action.SWING_RIGHT: ActionSpec(Action.SWING_RIGHT, ParameterType.NORMAL, None, "Swing right"),
+    Action.EXCITED_INSPACE: ActionSpec(Action.EXCITED_INSPACE, ParameterType.NORMAL, None, "Excited in-place motion"),
+    Action.LAZY_PAT_PAT: ActionSpec(Action.LAZY_PAT_PAT, ParameterType.NORMAL, None, "Lazy pat-pat motion"),
+    Action.CHEEKY_PAW: ActionSpec(Action.CHEEKY_PAW, ParameterType.NORMAL, None, "Cheeky paw motion"),
+    Action.WHINING: ActionSpec(Action.WHINING, ParameterType.NORMAL, None, "Whining motion"),
+    Action.SNIFF_FORWARD_INTERACTION: ActionSpec(Action.SNIFF_FORWARD_INTERACTION, ParameterType.NORMAL, None, "Sniff forward"),
+    Action.SPACE_BACKWARD_INTERACTION: ActionSpec(Action.SPACE_BACKWARD_INTERACTION, ParameterType.NORMAL, None, "Space-walk backward"),
+    Action.SNIFF_LEFT_INTERACTION: ActionSpec(Action.SNIFF_LEFT_INTERACTION, ParameterType.NORMAL, None, "Sniff left turn"),
+    Action.SNIFF_RIGHT_INTERACTION: ActionSpec(Action.SNIFF_RIGHT_INTERACTION, ParameterType.NORMAL, None, "Sniff right turn"),
+    Action.SNIFF_STEP_INTERACTION: ActionSpec(Action.SNIFF_STEP_INTERACTION, ParameterType.NORMAL, None, "Sniff step in place"),
+    Action.LEFT_ANGLE_INTERACTION: ActionSpec(Action.LEFT_ANGLE_INTERACTION, ParameterType.ANGLE, 90, "Turn left by a specified angle"),
+    Action.RIGHT_ANGLE_INTERACTION: ActionSpec(Action.RIGHT_ANGLE_INTERACTION, ParameterType.ANGLE, 90, "Turn right by a specified angle"),
 }
 
-# Actions that take a *count* parameter (number of repetitions)
-COUNT_BASED: Set[Action] = {
-    Action.PUSH_UP,
-    Action.SHAKE_HAND,
-    Action.PEE,
-    Action.TWIST,
-    Action.NOD,
-    Action.SHAKE_HEAD,
-    Action.UP_AND_DOWN,
-    Action.NEW_YEAR,
-    Action.SHAKE_HAND_WITH_SIT_DOWN,
-    Action.WAG_TAIL,
-    Action.STOMP,
-    Action.CELEBRATE,
-    Action.FLAILING,
-}
 
-# Actions that take an *angle* parameter (degrees)
-ANGLE_BASED: Set[Action] = {
-    Action.LEFT_ANGLE_INTERACTION,
-    Action.RIGHT_ANGLE_INTERACTION,
+def _actions_by_parameter_type(parameter_type: ParameterType) -> Set[Action]:
+    return {spec.action for spec in ACTION_SPECS.values() if spec.parameter_type == parameter_type}
+
+
+TIMER_BASED: Set[Action] = _actions_by_parameter_type(ParameterType.TIME)
+COUNT_BASED: Set[Action] = _actions_by_parameter_type(ParameterType.COUNT)
+ANGLE_BASED: Set[Action] = _actions_by_parameter_type(ParameterType.ANGLE)
+NORMAL_ACTIONS: Set[Action] = _actions_by_parameter_type(ParameterType.NORMAL)
+ACTION_DEFAULTS: Dict[Action, Optional[int]] = {
+    action: spec.default for action, spec in ACTION_SPECS.items()
+}
+ACTION_PARAMETER_TYPES: Dict[Action, ParameterType] = {
+    action: spec.parameter_type for action, spec in ACTION_SPECS.items()
 }
 
 # ---------------------------------------------------------------------------
@@ -198,13 +259,14 @@ ACTION_ALIASES: Dict[str, Action] = {
     "turn_right_angle":           Action.RIGHT_ANGLE_INTERACTION,
     "left_angle":                 Action.LEFT_ANGLE_INTERACTION,
     "right_angle":                Action.RIGHT_ANGLE_INTERACTION,
-    "low_forward":                Action.LOW_FORWARD,
-    "low_backward":               Action.LOW_BACKWARD,
-    "low_left":                   Action.LOW_LEFT,
-    "low_right":                  Action.LOW_RIGHT,
+    "low_forward_and_backward":   Action.LOW_FORWARD_AND_BACKWARD_INTERACTION,
+    "low_forward":                Action.LOW_FORWARD_INTERACTION,
+    "low_backward":               Action.LOW_BACKWARD_INTERACTION,
+    "low_left":                   Action.LOW_LEFT_INTERACTION,
+    "low_right":                  Action.LOW_RIGHT_INTERACTION,
     "stop":                       Action.STOP_INTERACTION,
-    "light_on":                   Action.LIGHT_ON,
-    "light_off":                  Action.LIGHT_OFF,
+    "light_on":                   Action.LIGHT_ON_INTERACTION,
+    "light_off":                  Action.LIGHT_OFF_INTERACTION,
     "rollover_recovery_right":    Action.ROLLOVER_RECOVERY_RIGHT,
     "rollover_recovery_left":     Action.ROLLOVER_RECOVERY_LEFT,
     "light_on_interaction":       Action.LIGHT_ON_INTERACTION,
@@ -272,8 +334,10 @@ INTERACTION_ACTION_NAMES: List[str] = [
     "EXCITED_UP_AND_DOWN", "SIT_DOWN", "SIT_DOWN_FOR_PROGRAM", "STAND_UP", "SHAKE_HAND",
     "SHAKE_HAND_WITH_SIT_DOWN", "NOD", "SHAKE_HEAD", "STRETCH", "PEE", "TWIST", "PUSH_UP", "NEW_YEAR",
     "WAG_TAIL", "STOMP", "SNIFF", "CELEBRATE", "JUMP", "DANCE", "KICK_BALL", "TOUCH_GROUND_RIGHT",
-    "TOUCH_GROUND_LEFT", "PLAY_DEAD", "STEP", "FORWARD", "BACK", "LEFT", "RIGHT", "LOW_FORWARD_AND_BACKWARD",
-    "LOW_FORWARD", "LOW_BACKWARD", "LOW_LEFT", "LOW_RIGHT", "STOP", "UP_AND_DOWN_FOR_TEST",
+    "TOUCH_GROUND_LEFT", "PLAY_DEAD", "STEP_INTERACTION", "FORWARD_INTERACTION", "BACK_INTERACTION",
+    "LEFT_INTERACTION", "RIGHT_INTERACTION", "LOW_FORWARD_AND_BACKWARD_INTERACTION",
+    "LOW_FORWARD_INTERACTION", "LOW_BACKWARD_INTERACTION", "LOW_LEFT_INTERACTION",
+    "LOW_RIGHT_INTERACTION", "STOP_INTERACTION", "UP_AND_DOWN_FOR_TEST",
     "ROLLOVER_RECOVERY_RIGHT", "ROLLOVER_RECOVERY_LEFT", "FLAILING", "STOP_FLAILING",
     "LIGHT_ON_INTERACTION", "LIGHT_OFF_INTERACTION", "ACTION_SEQUENCE_1", "ACTION_SEQUENCE_2",
     "ACTION_SEQUENCE_3", "ACTION_SEQUENCE_4",
