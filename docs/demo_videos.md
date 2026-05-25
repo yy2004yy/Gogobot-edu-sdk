@@ -22,7 +22,7 @@ it before uploading on a free plan.
 - Local MP4: [`docs/assets/demos/demo1.mp4`](assets/demos/demo1.mp4)
 - Shows: ears, expressions, actions, forward movement, angle turning, slow crouch, sleepy expression, stretch, and tail wag.
 
-GitHub player URL:
+GitHub player URL: https://github.com/user-attachments/assets/dc8c8bea-d5ef-4b3a-bc0b-4af86d036a9c
 
 <!-- Paste the GitHub-uploaded video URL on the next line. It must be a bare URL, not a Markdown link. -->
 
@@ -32,7 +32,7 @@ GitHub player URL:
 - Local MP4: [`docs/assets/demos/demo2.mp4`](assets/demos/demo2.mp4)
 - Shows: forward movement followed by a custom sniff-like action built from smooth body/foot adjustment, expression, and audio.
 
-GitHub player URL:
+GitHub player URL: https://github.com/user-attachments/assets/7a0e693a-2233-4a02-b598-6bd877eeb91f
 
 <!-- Paste the GitHub-uploaded video URL on the next line. It must be a bare URL, not a Markdown link. -->
 
